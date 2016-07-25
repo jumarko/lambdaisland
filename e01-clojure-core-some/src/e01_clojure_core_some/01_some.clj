@@ -1,4 +1,4 @@
-(ns lambdaisland.01-some
+(ns e01-clojure-core-some.01-some
   (:require [compojure.core]))
 
 (pos? 3)

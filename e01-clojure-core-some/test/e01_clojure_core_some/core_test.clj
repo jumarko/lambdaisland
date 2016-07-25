@@ -1,6 +1,6 @@
-(ns lambdaisland.core-test
+(ns e01-clojure-core-some.core-test
   (:require [clojure.test :refer :all]
-            [lambdaisland.core :refer :all]))
+            [e01-clojure-core-some.core :refer :all]))
 
 (deftest a-test
   (testing "FIXME, I fail."
