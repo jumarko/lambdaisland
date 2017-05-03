@@ -1,0 +1,57 @@
+#!/usr/bin/env lumo
+
+(require '[lumo.core :refer [*command-line-args*]]
+         '[clojure.string :as str])
+
+(println "-->" (first *command-line-args*))
+
+;; node modules for dealing with files
+(def node-fs (js/require "fs"))
+(def node-path (js/require "path"))
+
+;; shortcuts to make code more idiomatic
+(def read-dir (.-readdirSync node-fs))
+(def stat (.-statSync node-fs))
+(def path-join (.-statSync node-path))
+
+(defn directory? [f] (.isDirectory (stat f)))
+
+(def T-branch "|---")
+(def I-branch "|")
+(def L-branch "|___")
+(def SPACER "    ")
+
+;;; split rendering into two steps
+;;; 1. parsing into handy data structure
+;;; 2. rendering data structure
+
+(declare tree-entry)
+
+(defn child-entries [path]
+  (map #(tree-entry path %1) (read-dir path)))
+
+(defn tree-entry [path name]
+  (let [path (path-join path name)]
+    {:name name
+     :children (if (directory? path) (child-entries path))}))
+
+(defn render-tree [{:keys [name children]}]
+  (cons
+   name
+   (mapcat (fn [child index]
+             (let [subtree (render-tree child)
+                   last? (= index (dec (count children)))
+                   prefix-first (if last? L-branch T-branch)
+                   prefix-rest  (if last? SPACER I-branch)]
+               (cons (str prefix-first (first subtree))
+                     (map #(str prefix-rest %) (next subtree)))))
+           children
+           (range))))
+
+(defn birch [dir]
+  (->> (tree-entry "" dir)
+       render-tree
+       (str/join "\n")))
+
+(birch (first *command-line-args*))
+
