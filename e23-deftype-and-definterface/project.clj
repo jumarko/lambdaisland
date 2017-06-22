@@ -1,3 +1,4 @@
+
 (defproject e23-deftype-and-definterface "0.1.0-SNAPSHOT"
   :description "Examples for lambdaisland episode 23; deftype and definterface"
   :url "https://lambdaisland.com/episodes/deftype_definterface"
